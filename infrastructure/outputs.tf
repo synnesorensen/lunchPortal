@@ -10,3 +10,8 @@ output "dynamodb_table_name" {
 output "health_lambda_name" {
   value = aws_lambda_function.health.function_name
 }
+
+output "cognito_jwt_enabled" {
+  description = "When true, GET /me is deployed and expects Authorization: Bearer <Cognito id or access token>."
+  value       = local.use_cognito_jwt
+}

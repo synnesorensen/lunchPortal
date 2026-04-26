@@ -22,15 +22,24 @@ cd infrastructure && terraform init && terraform apply
 
 After apply, copy `api_base_url` from Terraform output into `client/.env` as `VITE_API_URL` (or use a `.env.local` in `client/`).
 
+### Cognito + `GET /me`
+
+1. In `infrastructure/terraform.tfvars` (or workspace vars), set **`cognito_user_pool_id`** and **`cognito_app_client_id`** for your **existing** pool and a **public** app client (no secret, SRP / username-password allowed for dev).
+2. `terraform apply` — creates JWT authorizer, **`GET /me`** Lambda, and route (skipped if either id is empty).
+3. Match the same ids in `client/.env` as `VITE_COGNITO_USER_POOL_ID` and `VITE_COGNITO_CLIENT_ID` (see `client/.env.example`).
+4. Open **Sign in** — browser uses SRP, then calls `/me` with **`Id` token** in `Authorization: Bearer …`.
+
 ```bash
 cd client && npm run dev
 ```
 
-Open the app; it calls `GET /health` on the API.
+Open the app; home calls `GET /health`. After Cognito env is set, **Sign in** exercises `GET /me`.
 
 ## Terraform state
 
 Default backend is **local** (`infrastructure/terraform.tfstate`). For teams, configure a remote S3 backend (see `infrastructure/backend.tf.example`).
+
+Commit **`infrastructure/.terraform.lock.hcl`** so provider versions stay reproducible. Do not commit **`infrastructure/.terraform/`** (ignored via root `.gitignore`).
 
 ## Workspaces
 

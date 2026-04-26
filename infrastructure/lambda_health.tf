@@ -26,18 +26,18 @@ resource "aws_iam_role_policy_attachment" "lambda_health_logs" {
 
 resource "aws_lambda_function" "health" {
   function_name    = "${var.project_name}-health"
-  role               = aws_iam_role.lambda_health.arn
-  handler            = "index.handler"
-  runtime            = "nodejs22.x"
-  filename           = data.archive_file.health_lambda.output_path
-  source_code_hash   = data.archive_file.health_lambda.output_base64sha256
-  timeout            = 10
-  memory_size        = 128
+  role             = aws_iam_role.lambda_health.arn
+  handler          = "index.handler"
+  runtime          = "nodejs22.x"
+  filename         = data.archive_file.health_lambda.output_path
+  source_code_hash = data.archive_file.health_lambda.output_base64sha256
+  timeout          = 10
+  memory_size      = 128
 
   environment {
     variables = {
-      DYNAMODB_TABLE_NAME    = aws_dynamodb_table.main.name
-      COGNITO_USER_POOL_ID   = var.cognito_user_pool_id
+      DYNAMODB_TABLE_NAME  = aws_dynamodb_table.main.name
+      COGNITO_USER_POOL_ID = var.cognito_user_pool_id
     }
   }
 

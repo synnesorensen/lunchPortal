@@ -30,9 +30,9 @@ resource "aws_apigatewayv2_stage" "default" {
 }
 
 resource "aws_lambda_permission" "health_apigw" {
-  statement_id  = "AllowAPIGatewayInvoke"
-  action          = "lambda:InvokeFunction"
-  function_name   = aws_lambda_function.health.function_name
-  principal       = "apigateway.amazonaws.com"
-  source_arn      = "${aws_apigatewayv2_api.http.execution_arn}/*/*"
+  statement_id  = "AllowAPIGatewayInvokeHealth"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.health.function_name
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.http.execution_arn}/*/*"
 }

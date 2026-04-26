@@ -1,14 +1,17 @@
 import * as esbuild from "esbuild";
 import { mkdirSync } from "node:fs";
 
-mkdirSync("dist/health", { recursive: true });
+const handlers = ["health", "me"];
 
-await esbuild.build({
-  entryPoints: ["src/handlers/health.ts"],
-  bundle: true,
-  platform: "node",
-  target: "node22",
-  format: "cjs",
-  outfile: "dist/health/index.js",
-  sourcemap: true,
-});
+for (const name of handlers) {
+  mkdirSync(`dist/${name}`, { recursive: true });
+  await esbuild.build({
+    entryPoints: [`src/handlers/${name}.ts`],
+    bundle: true,
+    platform: "node",
+    target: "node22",
+    format: "cjs",
+    outfile: `dist/${name}/index.js`,
+    sourcemap: true,
+  });
+}
