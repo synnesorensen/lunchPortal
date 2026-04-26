@@ -33,7 +33,26 @@ After apply, copy `api_base_url` from Terraform output into `client/.env` as `VI
 cd client && npm run dev
 ```
 
-Open the app; home calls `GET /health`. After Cognito env is set, **Sign in** exercises `GET /me`.
+Open the app; home calls `GET /health`. After Cognito env is set, **Sign in** exercises `GET /me`, `GET /profile`, and `PUT /profile`.
+
+### User profile (Dynamo)
+
+Stored at **`pk = USER#<cognitoSub>`**, **`sk = PROFILE`**, `entityType = UserProfile`. Same **`me`** Lambda handles:
+
+- **`GET /me`** — JWT claims plus optional `profile` object from Dynamo.
+- **`GET /profile`** — `{ "profile": UserProfileDto | null }`.
+- **`PUT /profile`** — JSON body with optional `fullName`, `phone`, `deliveryAddress`, `allergies` (string array), `note` (string or `null` to clear). Missing fields keep previous values; first save creates the row.
+
+Example (replace `TOKEN` and API host):
+
+```bash
+API='https://xxxx.execute-api.eu-north-1.amazonaws.com'
+TOKEN='eyJ...'
+curl -sS -H "Authorization: Bearer $TOKEN" "$API/profile"
+curl -sS -X PUT -H "Authorization: Bearer $TOKEN" -H 'Content-Type: application/json' \
+  -d '{"fullName":"Ada","phone":"12","deliveryAddress":"Oslo","allergies":["nuts"],"note":"hi"}' \
+  "$API/profile"
+```
 
 ## Terraform state
 

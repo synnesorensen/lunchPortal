@@ -1,31 +1,13 @@
-import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import {
-  DynamoDBDocumentClient,
-  GetCommand,
-  PutCommand,
-} from "@aws-sdk/lib-dynamodb";
+import { GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
 import type {
   APIGatewayProxyEventV2,
   APIGatewayProxyResultV2,
 } from "aws-lambda";
+import { getDocClient } from "../lib/dynamoClient.js";
 import { getTableName } from "../lib/tableName.js";
 
 const PING_PK = "SYSTEM";
 const PING_SK = "PING";
-
-function getAwsRegion(): string {
-  const r = process.env.AWS_REGION;
-  if (typeof r !== "string" || r.length === 0) {
-    throw new Error("Missing env AWS_REGION");
-  }
-  return r;
-}
-
-const docClient = DynamoDBDocumentClient.from(
-  new DynamoDBClient({
-    region: getAwsRegion(),
-  })
-);
 
 interface PingItem {
   pk: string;
@@ -52,7 +34,7 @@ export const handler = async (
   const tableName = getTableName();
 
   if (method === "GET") {
-    const out = await docClient.send(
+    const out = await getDocClient().send(
       new GetCommand({
         TableName: tableName,
         Key: { pk: PING_PK, sk: PING_SK },
@@ -92,7 +74,7 @@ export const handler = async (
       ...(note !== undefined ? { note } : {}),
     };
 
-    await docClient.send(
+    await getDocClient().send(
       new PutCommand({
         TableName: tableName,
         Item: item,

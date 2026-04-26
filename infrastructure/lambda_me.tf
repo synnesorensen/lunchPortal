@@ -56,6 +56,24 @@ resource "aws_apigatewayv2_route" "me_get" {
   target             = "integrations/${aws_apigatewayv2_integration.me[0].id}"
 }
 
+resource "aws_apigatewayv2_route" "profile_get" {
+  count              = local.use_cognito_jwt ? 1 : 0
+  api_id             = aws_apigatewayv2_api.http.id
+  route_key          = "GET /profile"
+  authorization_type = "JWT"
+  authorizer_id      = aws_apigatewayv2_authorizer.cognito[0].id
+  target             = "integrations/${aws_apigatewayv2_integration.me[0].id}"
+}
+
+resource "aws_apigatewayv2_route" "profile_put" {
+  count              = local.use_cognito_jwt ? 1 : 0
+  api_id             = aws_apigatewayv2_api.http.id
+  route_key          = "PUT /profile"
+  authorization_type = "JWT"
+  authorizer_id      = aws_apigatewayv2_authorizer.cognito[0].id
+  target             = "integrations/${aws_apigatewayv2_integration.me[0].id}"
+}
+
 resource "aws_lambda_permission" "me_apigw" {
   count         = local.use_cognito_jwt ? 1 : 0
   statement_id  = "AllowAPIGatewayInvokeMe"
