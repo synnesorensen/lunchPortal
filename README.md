@@ -47,4 +47,13 @@ Commit **`infrastructure/.terraform.lock.hcl`** so provider versions stay reprod
 |-----------|--------------------------------|
 | `common`  | Shared types (`Nok`, entities)|
 | `server`  | Lambda bundles (`dist/`)      |
+
+## DynamoDB single-table probe
+
+Lambdas use env **`DYNAMODB_TABLE_NAME`**. The **`dbPing`** Lambda exposes:
+
+- **`GET /db/ping`** — `GetItem` on `pk = SYSTEM`, `sk = PING` (returns `null` until first POST).
+- **`POST /db/ping`** — `PutItem` with `updatedAt` and optional JSON body `{ "note": "..." }` (max 500 chars).
+
+Shared IAM policy **`…-lambda-dynamodb-main`** is attached to **health**, **me** (when deployed), and **dbPing** roles for the main table ARN and `index/*`.
 | `client`  | Vite SPA                       |

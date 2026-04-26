@@ -41,5 +41,8 @@ resource "aws_lambda_function" "health" {
     }
   }
 
-  depends_on = [aws_iam_role_policy_attachment.lambda_health_logs]
+  depends_on = [
+    aws_iam_role_policy_attachment.lambda_health_logs,
+    aws_iam_role_policy_attachment.health_dynamodb,
+  ]
 }
