@@ -1,0 +1,15 @@
+{
+  "name": "new-lunch-app",
+  "private": true,
+  "workspaces": [
+    "common",
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "build:server": "npm run build -w @lunch/common && npm run build -w @lunch/server",
+    "terraform:plan": "npm run build:server && terraform -chdir=infrastructure plan",
+    "terraform:apply": "npm run build:server && terraform -chdir=infrastructure apply"
+  }
+}

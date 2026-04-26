@@ -1,0 +1,13 @@
+.env
+.env.*.local
+node_modules
+dist
+*.tsbuildinfo
+.terraform
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+crash.log
+override.tf
+override.tf.json
+.DS_Store

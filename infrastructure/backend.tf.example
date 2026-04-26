@@ -1,0 +1,12 @@
+# Copy to backend.tf and fill bucket/dynamodb table for team state.
+# Remove this comment block after configuring.
+#
+# terraform {
+#   backend "s3" {
+#     bucket         = "your-terraform-state-bucket"
+#     key            = "newlunchapp/terraform.tfstate"
+#     region         = "eu-north-1"
+#     encrypt        = true
+#     dynamodb_table = "terraform-locks"
+#   }
+# }
